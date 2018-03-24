@@ -22,8 +22,8 @@ def secret(token):
             os.mkdir(dot_folder)
 
         # writing out the token
-        with open(token_path, 'w') as f:
-            f.write(str(token))
+        with open(token_path, 'w') as file:
+            file.write(str(token))
 
         print(stylize("Secret successfully updated.", fg("green")))
 

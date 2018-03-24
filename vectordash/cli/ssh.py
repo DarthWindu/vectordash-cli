@@ -22,17 +22,17 @@ def ssh(machine):
         token = root + "/.vectordash/token"
 
         if os.path.isfile(token):
-            with open(token) as f:
-                secret_token = f.readline()
+            with open(token) as file:
+                secret_token = file.readline()
 
             try:
                 # API endpoint for machine information
                 full_url = API_URL + str(secret_token)
-                r = requests.get(full_url)
+                response = requests.get(full_url)
 
                 # API connection is successful, retrieve the JSON object
-                if r.status_code == 200:
-                    data = r.json()
+                if response.status_code == 200:
+                    data = response.json()
 
                     # machine provided is one this user has access to
                     if data.get(machine):
@@ -44,14 +44,14 @@ def ssh(machine):
 
                         # name for pem key file, formatted to be stored
                         machine_name = (machine['name'].lower()).replace(" ", "")
-                        key_file = root + "/.vectordash/" + machine_name + "-key.pem"
+                        key_file_path = root + "/.vectordash/" + machine_name + "-key.pem"
 
                         # create new file ~/.vectordash/<key_file>.pem to write into
-                        with open(key_file, "w") as h:
-                            h.write(pem)
+                        with open(key_file_path, "w") as key_file:
+                            key_file.write(pem)
 
                         # give key file permissions for ssh
-                        os.system("chmod 600 " + key_file)
+                        os.system("chmod 600 " + key_file_path)
 
                         # Port, IP address, and user information for ssh command
                         port = str(machine['port'])
@@ -59,7 +59,7 @@ def ssh(machine):
                         user = str(machine['user'])
 
                         # execute ssh command
-                        ssh_command = "ssh " + user + "@" + ip + " -p " + port + " -i " + key_file
+                        ssh_command = "ssh " + user + "@" + ip + " -p " + port + " -i " + key_file_path
                         print("Executing " + stylize(ssh_command, fg("blue")))
                         os.system(ssh_command)
 
