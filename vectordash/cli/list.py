@@ -8,6 +8,7 @@ from colored import attr
 
 from vectordash import API_URL, TOKEN_URL
 
+
 @click.command()
 def list():
     """
@@ -19,15 +20,15 @@ def list():
         filename = os.path.expanduser('~/.vectordash/token')
 
         if os.path.isfile(filename):
-            with open(filename) as f:
-                secret_token = f.readline()
+            with open(filename) as file:
+                secret_token = file.readline()
                 full_url = API_URL + str(secret_token)
 
             try:
-                r = requests.get(full_url)
+                response = requests.get(full_url)
 
-                if r.status_code == 200:
-                    data = r.json()
+                if response.status_code == 200:
+                    data = response.json()
 
                     if len(data) > 0:
                         green_bolded = fg("green") + attr("bold")
@@ -37,8 +38,8 @@ def list():
                             machine = str(pretty_id) + " " + str(value['name'])
                             print(machine)
                     else:
-                        vd = stylize("https://vectordash.com", fg("blue"))
-                        print("You are not currently renting any machine. Go to " + vd + " to browse GPUs.")
+                        vectordash = stylize("https://vectordash.com", fg("blue"))
+                        print("You are not currently renting any machine. Go to " + vectordash + " to browse GPUs.")
                 else:
                     print(stylize("Could not connect to vectordash API with provided token", fg("red")))
 
